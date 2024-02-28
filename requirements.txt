@@ -43,3 +43,4 @@ zope.interface==6.2
 Flask-SocketIO==5.3.6
 eventlet==0.35.2
 gunicorn==21.2.0
+gevent==24.2.1
