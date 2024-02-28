@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algo Master</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <script>
+        var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
+
+        socket.on('connect', function () {
+            console.log('Connected to the server');
+            setInterval(() => socket.emit('ping'), 25000);
+        });
+
+        socket.on('pong', function () {
+            console.log('Pong received from server');
+        });
+    </script>
+    <style>
+        .body {
+            height: 100%;
+        }
+
+        .message-box {
+            width: 95%;
+            border: 2px solid black;
+            height: 300px;
+            overflow-y: auto;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 0 20px;
+        }
+
+        .btn {
+            padding: 10px 30px;
+            font-size: 18px;
+            border-radius: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            scale: 1.05;
+        }
+    </style>
+</head>
+
+<body>
+    <h1 style=" font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center;"><span>Algo</span>
+        <span>Master</span>
+    </h1>
+    <div style="background-color: rgb(199, 199, 199); width: 100%; height: 1px; margin-bottom:60px; "></div>
+    <div id="messages" class="message-box"></div>
+    <div style="margin: 20px; display: flex; align-items: center; justify-content: center;">
+        <button id="startBtn" class="btn"
+            style="margin-right: 30px; background-color: rgba(58, 190, 46, 0.938);">Start</button>
+        <button id="stopBtn" class="btn" style="background-color: rgba(245, 46, 46, 0.938);">Stop</button>
+    </div>
+    <script>
+        $(document).ready(function () {
+            $('#startBtn').click(function () {
+                $.post('/start', {}, function (response) {
+                    console.log(response);
+                });
+            });
+
+            $('#stopBtn').click(function () {
+                $.post('/stop', {}, function (response) {
+                    console.log(response);
+                });
+            });
+
+            function fetchMessages() {
+                $.get('/get-messages', function (response) {
+                    console.log(response)
+                    var isUserAtBottom = $('#messages').scrollTop() + $('#messages').innerHeight() >= $('#messages')[0].scrollHeight;
+                    $('#messages').html('');
+                    response.messages.forEach(function (message) {
+                        $('#messages').append('<p>' + message + '</p>');
+                    });
+
+                    if (isUserAtBottom) {
+                        $('#messages').animate({
+                            scrollTop: $('#messages')[0].scrollHeight
+                        }, 100);
+                    }
+                });
+            }
+
+
+            // Fetch messages every second
+            setInterval(fetchMessages, 1000);
+        });
+    </script>
+</body>
+
+</html>

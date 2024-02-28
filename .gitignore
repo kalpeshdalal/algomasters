@@ -1,0 +1,5 @@
+# Ignore compiled Python files
+*.pyc
+_pycache_/
+fyersDataSocket.log/
+fyersApi.log/
