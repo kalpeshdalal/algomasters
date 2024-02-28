@@ -4,7 +4,8 @@ import FyersWebSocket as Fskt
 from flask_socketio import SocketIO
 
 app = Flask(__name__)
-socketio = SocketIO(app)
+socketio = SocketIO(app, logger=True, engineio_logger=True, cors_allowed_origins="*")
+
 
 websocket_running = False
 lock = Lock()
